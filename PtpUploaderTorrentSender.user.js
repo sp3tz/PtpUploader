@@ -25,8 +25,6 @@
 // @include     http*://*karagarga.in/details.php*
 // @include     http*://*piratethenet.org/details.php*
 // @include     http*://*pretome.info/details.php*
-// @include     http*://*tehconnection.eu/torrents.php*
-// @include     http*://*thegft.org/details.php*
 // @include     https://www.torrentbytes.net/details.php?id=
 // @include     http*://*torrentleech.org/torrent/*
 // @include     http*://*digitalhive.org/details.php*
@@ -240,7 +238,7 @@ function Main()
 	else if ( /https?:\/\/.*?bitvaulttorrent\.com\/details\.php\?id=.*/.test( document.URL ) )
 		downloadLinkRegEx = /download.php\/\d+\/.*/; 
 	else if ( /https?:\/\/.*?bit-hdtv\.com\/details\.php\?id=.*/.test( document.URL ) )
-		downloadLinkRegEx = /download.php\?\/\d+\/.*/;
+		downloadLinkRegEx = /download.php\?id=\d+.*/;
 	else if ( /https?:\/\/.*?chdbits\.org\/details\.php\?id=.*/.test( document.URL ) )
 		downloadLinkRegEx = /download.php\?id=\d+.*/;
 	else if ( /https?:\/\/.*?hon3yhd\.com\/.*/.test( document.URL ) )
@@ -288,7 +286,10 @@ function Main()
 		imdbUrl = GetNonLinkifiedImdbUrl(); // The IMDb link uses a redirect, so we use the text.
 	}
 	else if ( /https?:\/\/.*?digitalhive\.org\/details\.php\?id=.*/.test( document.URL ) )
+	{
 		downloadLinkRegEx = /download.php\?id=\d+.*/;
+		imdbUrl = GetNonLinkifiedImdbUrl();
+	}
 	else if ( /https?:\/\/.*?horrorcharnel.kicks-ass\.org\/details\.php\?id=.*/.test( document.URL ) )
 		downloadLinkRegEx = /download.php\?torrent=\d+.*/;
 	else if ( /https?:\/\/.*?cinematik\.net\/details\.php\?id=.*/.test( document.URL ) )
@@ -303,7 +304,7 @@ function Main()
 		downloadLinkRegEx = /download.php\?id=\.*/;
 	else if ( /https?:\/\/.*?publichd\.to\/.*/.test( document.URL ) )
 		downloadLinkRegEx = /torrent\/download\/.*/;
-	else if ( /https?:\/\/.*?revolutiontt\.me\/.*/.test( document.URL ) )
+	else if ( /https?:\/\/.*?revolutiontt\.me\/details\.php\?id=.*/.test( document.URL ) )
 		downloadLinkRegEx = /download\.php\/.*/;
 	else if ( /https?:\/\/.*extratorrent\.cc\/.*/.test( document.URL ) )
 	{
@@ -311,11 +312,6 @@ function Main()
 		var match = document.body.innerHTML.match( downloadLinkRegEx );
 		if ( match )
 			downloadUrl = "http://178.73.198.210/torrent/" + match[ 1 ] + ".torrent";
-	}
-	else if ( /https?:\/\/.*?thegft\.org\/details\.php\?id=.*/.test( document.URL ) )
-	{
-		downloadLinkRegEx = /download.php\?torrent=\d+.*/;
-		imdbUrl = GetNonLinkifiedImdbUrl(); // Links in the NFO are not linkified on GFT.
 	}
 	else if ( /https?:\/\/.*?bollywoodtorrents\.me\/.*/.test( document.URL ) )
 	{
@@ -331,17 +327,7 @@ function Main()
 		imdbUrl = GetNonLinkifiedImdbUrl();
 	}
 	else if ( /https?:\/\/.*?torrentleech\.org\/torrent\/.*/.test( document.URL ) )
-	{
-		downloadLinkElement = document.getElementById( "downloadButton" );
-		if ( !downloadLinkElement )
-			return;
-
-		var action = downloadLinkElement.parentNode.getAttribute( "action" );
-		if ( !action )
-			return;
-
-		downloadUrl = window.location.protocol + "//" + window.location.host + action;
-	}
+		downloadLinkRegEx = /download\/.*/;
 
 	if ( !downloadLinkRegEx && !downloadLinkElement )
 		return;
@@ -355,7 +341,7 @@ function Main()
 		if ( imdbUrl.length <= 0 )
 			imdbUrl = GetImdbUrl( urlNode, siteName );
 	}
-
+	
 	if ( imdbUrl.length <= 0 )
 		return;
 
