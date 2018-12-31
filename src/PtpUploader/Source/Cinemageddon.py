@@ -71,11 +71,13 @@ class Cinemageddon(SourceBase):
 
 		# Get IMDb id.
 		if ( not releaseInfo.HasImdbId() ) and ( not releaseInfo.HasPtpId() ):
-			matches = re.search( r'imdb\.com/title/tt(\d+)', description )
-			if matches is None:
+                        matches = re.search(r'<span id="torrent_imdb">(.*?)</span>', description).group(1).replace('t', '').split(' ')
+			if not matches:
 				raise PtpUploaderException( JobRunningState.Ignored_MissingInfo, "IMDb id can't be found on torrent page." )
+                        elif len(matches) > 1:
+                                raise PtpUploaderException( JobRunningState.Ignored_MissingInfo, "Multiple IMDb IDs found on page." )
 
-			releaseInfo.ImdbId = matches.group( 1 )
+			releaseInfo.ImdbId = matches[0]
 
 		# Get size.
 		# Two possible formats:
@@ -217,7 +219,7 @@ class Cinemageddon(SourceBase):
 		if len( releaseInfo.InternationalTitle ) <= 0:
 			raise PtpUploaderException( "Can't rename release because international title is empty." )
 
-		if len( releaseInfo.Year ) <= 0:
+		if releaseInfo.Year:
 			raise PtpUploaderException( "Can't rename release because year is empty." )
 
 		name = "%s (%s) %s %s" % ( releaseInfo.InternationalTitle, releaseInfo.Year, releaseInfo.Source, releaseInfo.Codec )
