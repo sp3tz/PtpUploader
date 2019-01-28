@@ -6,7 +6,6 @@ import logging
 import os
 import sys
 import requests
-import cfscrape
 
 class MyGlobalsClass:
 	def __init__(self):
