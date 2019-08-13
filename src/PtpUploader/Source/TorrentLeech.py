@@ -65,6 +65,9 @@ class TorrentLeech(SourceBase):
 		else:
 			size = GetSizeFromText( matches.group( 1 ) )
 
+		if ( not releaseInfo.HasImdbId() ) and ( not releaseInfo.HasPtpId() ):
+			releaseInfo.ImdbId = NfoParser.GetImdbId( response )
+
 		return releaseName, size
 
 	# On TorrentLeech the torrent page doesn't contain the NFO, and the NFO page doesn't contain the release name so we have to read them separately. 
@@ -72,7 +75,7 @@ class TorrentLeech(SourceBase):
 		if releaseInfo.HasImdbId() or releaseInfo.HasPtpId():
 			return
 		
-		url = "https://www.torrentleech.org/torrents/torrent/nfotext?torrentID=%s" % releaseInfo.AnnouncementId
+		url = "https://classic.torrentleech.org/torrents/torrent/nfotext?torrentID=%s" % releaseInfo.AnnouncementId
 		logger.info( "Downloading NFO from page '%s'." % url )
 		
 		result = MyGlobals.session.get( url )
@@ -95,7 +98,7 @@ class TorrentLeech(SourceBase):
 		if releaseNameParser.Scene:
 			releaseInfo.SetSceneRelease()
 
-		self.__ReadImdbIdFromNfoPage( logger, releaseInfo )
+		#self.__ReadImdbIdFromNfoPage( logger, releaseInfo )
 
 	def __HandleAutoCreatedJob(self, logger, releaseInfo):
 		releaseInfo.ReleaseName = self.__RestoreReleaseName( releaseInfo.ReleaseName )

@@ -21,11 +21,12 @@ class MyGlobalsClass:
 
 		# Use cloudflare-scrape if installed.
 		try:	
-			from cfscrape import CloudflareAdapter
-			self.session.mount( "http://", CloudflareAdapter() )
-			self.session.mount( "https://", CloudflareAdapter() )
+		    import cfscrape
+                    self.session = cfscrape.create_scraper(sess=self.session)
+		    #self.session.mount( "http://", CloudflareAdapter() )
+		    #self.session.mount( "https://", CloudflareAdapter() )
 		except ImportError:
-			pass
+		    pass
 
 	def InitializeGlobals(self, workingPath):
 		self.InitializeLogger( workingPath )

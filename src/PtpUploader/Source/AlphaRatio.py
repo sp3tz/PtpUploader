@@ -113,7 +113,7 @@ class AlphaRatio( SourceBase ):
 		# We don't log the download URL because it is sensitive information.
 		logger.info( "Downloading torrent file from AlphaRatio to '%s'." % path )
 
-		url = "https://alpharatio.cc/torrents.php?action=download&id=" + releaseInfo.AnnouncementId
+		url = "https://alpharatio.cc/torrents.php?action=download&usetoken=1&id=" + releaseInfo.AnnouncementId
 		result = MakeRetryingHttpGetRequestWithRequests( url )
 		response = result.content
 		self.__CheckIfLoggedInFromResponse( response )
