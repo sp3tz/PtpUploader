@@ -128,6 +128,8 @@ class Settings(object):
 		# Load Settings.ini from the same directory where PtpUploader is.
 		settingsDirectory, moduleFilename = os.path.split( __file__ ) # __file__ contains the full path of the current running module
 		settingsPath = os.path.join( settingsDirectory, "Settings.ini" )
+                if not os.path.isfile(settingsPath):
+                        settingsPath = os.path.expanduser("~/.config/ptpuploader/settings.ini")
 		print "Loading settings from '%s'." % settingsPath # MyGlobals.Logger is not initalized yet. 
 		fp = codecs.open( settingsPath, "r", "utf-8-sig" )
 		configParser.readfp( fp )
@@ -148,7 +150,6 @@ class Settings(object):
 		Settings.MediaInfoPath = Settings.__GetPath( "Settings", "MediaInfoPath" )
 		Settings.MplayerPath = Settings.__GetPath( "Settings", "MplayerPath" )
 		Settings.MpvPath = Settings.__GetPath( "Settings", "MpvPath" )
-		Settings.MktorrentPath = Settings.__GetPath( "Settings", "MktorrentPath" )
 		Settings.UnrarPath = Settings.__GetPath( "Settings", "UnrarPath" )
 		Settings.ImageMagickConvertPath = Settings.__GetPath( "Settings", "ImageMagickConvertPath" ) 
 
@@ -158,7 +159,7 @@ class Settings(object):
 		Settings.IgnoreReleaseTag = Settings.MakeListOfListsFromString( Settings.__GetDefault( configParser, "Settings", "IgnoreReleaseTag", "" ) )
 		Settings.IgnoreReleaseTagAfterYear = Settings.MakeListOfListsFromString( Settings.__GetDefault( configParser, "Settings", "IgnoreReleaseTagAfterYear", "" ) )
 		Settings.IgnoreReleaserGroup = Settings.MakeListFromExtensionString( Settings.__GetDefault( configParser, "Settings", "IgnoreReleaserGroup", "" ) )
-		Settings.SceneReleaserGroup = Settings.__LoadSceneGroups( os.path.join( settingsDirectory, "SceneGroups.txt" ) )
+		Settings.SceneReleaserGroup = Settings.__LoadSceneGroups( os.path.join( os.path.expanduser("~/.config/ptpuploader"), "scene_groups.txt") )
 
 		Settings.WebServerAddress = Settings.__GetDefault( configParser, "Settings", "WebServerAddress", "" )
 		Settings.WebServerAddress = Settings.WebServerAddress.replace( "http://", "" ) 
@@ -228,9 +229,6 @@ class Settings(object):
 		MyGlobals.Logger.info( "Checking paths" )
 
 		if not Settings.__VerifyProgramPath( "MediaInfo", [ Settings.MediaInfoPath, "--version" ] ):
-			return False
-
-		if not Settings.__VerifyProgramPath( "mktorrent", [ Settings.MktorrentPath ] ):
 			return False
 
 		if Settings.IsMpvEnabled():
