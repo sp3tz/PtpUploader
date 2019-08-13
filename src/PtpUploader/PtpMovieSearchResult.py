@@ -2,10 +2,9 @@ from Helper import GetSizeFromText, SizeToText, TimeDifferenceToText
 from NfoParser import NfoParser
 from PtpUploaderException import PtpUploaderException
 
-import simplejson as json
-
 import datetime
 import re
+import json
 
 def GetSourceScore( source ):
 	scores = {

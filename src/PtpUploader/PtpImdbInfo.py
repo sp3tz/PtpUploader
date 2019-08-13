@@ -2,9 +2,8 @@
 from Ptp import Ptp
 from PtpUploaderException import *
 
-import simplejson as json
-
 import re
+import json
 
 class PtpImdbInfo:
 	def __init__(self, imdbId):
